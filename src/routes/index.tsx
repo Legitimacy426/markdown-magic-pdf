@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { renderMarkdown } from "@/lib/markdown";
 import { THEMES, type ThemeId } from "@/lib/pdf-themes";
 import { SAMPLE_MARKDOWN } from "@/lib/sample-markdown";
-import { FileDown, FileUp, FileText, Loader2, Trash2, Eye, Code2 } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
+import { FileDown, FileUp, FileText, Loader2, Trash2, Eye, Code2, Sun, Moon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
