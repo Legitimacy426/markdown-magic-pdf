@@ -5,6 +5,7 @@ import { THEMES, type ThemeId } from "@/lib/pdf-themes";
 import { SAMPLE_MARKDOWN } from "@/lib/sample-markdown";
 import { useTheme } from "@/hooks/use-theme";
 import { FileDown, FileUp, FileText, Loader2, Trash2, Eye, Code2, Sun, Moon } from "lucide-react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,24 +64,71 @@ function Index() {
   async function handleExport() {
     if (exporting) return;
     setExporting(true);
+    const toastId = toast.loading("Generating your PDF...");
+
     try {
       const html2pdfMod = await import("html2pdf.js");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const html2pdf = html2pdfMod.default as unknown as () => any;
+      // Robustly get the html2pdf function as it can be exported differently depending on the environment
+      // @ts-ignore - html2pdf.js doesn't have perfect types for all export styles
+      const html2pdf = (html2pdfMod.default?.default || html2pdfMod.default || html2pdfMod) as any;
+
+      if (typeof html2pdf !== "function") {
+        throw new Error("Failed to load PDF library correctly. Please try again.");
+      }
+
+      const wrapper = document.createElement("div");
+      // We must append to body for html2canvas to work correctly (it needs layout info)
+      // but we keep it off-screen
+      wrapper.style.position = "absolute";
+      wrapper.style.left = "-9999px";
+      wrapper.style.top = "0";
+
       const container = document.createElement("div");
-      container.innerHTML = `<style>${currentTheme.css}</style><div class="md-doc">${html}</div>`;
+      // Set width to match the page size for proper scaling
+      container.style.width = orientation === "portrait" ? "210mm" : "297mm";
+
+      container.innerHTML = `
+        <style>
+          ${currentTheme.css}
+          .md-doc { padding: 0; margin: 0; background: white; }
+          /* Ensure images and tables don't break across pages poorly */
+          .md-doc img, .md-doc table, .md-doc pre, .md-doc blockquote { 
+            page-break-inside: avoid; 
+          }
+        </style>
+        <div class="md-doc">${html}</div>
+      `;
+
+      wrapper.appendChild(container);
+      document.body.appendChild(wrapper);
+
       const safeName = (filename.trim() || "document").replace(/\.pdf$/i, "");
+
       await html2pdf()
         .set({
           margin,
           filename: `${safeName}.pdf`,
           image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            logging: false,
+            windowWidth: document.documentElement.offsetWidth,
+            windowHeight: document.documentElement.offsetHeight,
+            scrollY: 0,
+          },
           jsPDF: { unit: "mm", format: pageSize, orientation },
           pagebreak: { mode: ["css", "legacy"] },
         })
         .from(container)
         .save();
+
+      document.body.removeChild(wrapper);
+      toast.success("PDF exported successfully!", { id: toastId });
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to export PDF", { id: toastId });
     } finally {
       setExporting(false);
     }
