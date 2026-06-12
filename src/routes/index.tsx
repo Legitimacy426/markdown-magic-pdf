@@ -74,6 +74,7 @@ function Index() {
           html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
           jsPDF: { unit: "mm", format: pageSize, orientation },
           pagebreak: { mode: ["css", "legacy"] },
+        } as Parameters<ReturnType<typeof html2pdf>["set"]>[0])
         })
         .from(container)
         .save();
