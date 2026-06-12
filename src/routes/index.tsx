@@ -3,7 +3,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { renderMarkdown } from "@/lib/markdown";
 import { THEMES, type ThemeId } from "@/lib/pdf-themes";
 import { SAMPLE_MARKDOWN } from "@/lib/sample-markdown";
-import { FileDown, FileUp, FileText, Loader2, Trash2, Eye, Code2 } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
+import { FileDown, FileUp, FileText, Loader2, Trash2, Eye, Code2, Sun, Moon } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,6 +22,7 @@ type PageSize = "a4" | "letter" | "legal";
 type Orientation = "portrait" | "landscape";
 
 function Index() {
+  const { mode, toggle } = useTheme();
   const [markdown, setMarkdown] = useState<string>(SAMPLE_MARKDOWN);
   const [theme, setTheme] = useState<ThemeId>("modern");
   const [pageSize, setPageSize] = useState<PageSize>("a4");
@@ -118,6 +120,14 @@ function Index() {
             >
               <FileUp className="h-4 w-4" />
               <span className="hidden sm:inline">Upload .md</span>
+            </button>
+            <button
+              onClick={toggle}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium transition hover:bg-accent"
+              title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {mode === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              <span className="hidden sm:inline">{mode === "dark" ? "Dark" : "Light"}</span>
             </button>
             <button
               onClick={() => void handleExport()}
@@ -238,7 +248,7 @@ function Index() {
           </div>
           <div className="flex-1 overflow-auto p-4 sm:p-8">
             <div
-              className="mx-auto max-w-[820px] rounded-md bg-white p-10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_10px_40px_-20px_rgba(0,0,0,0.25)] sm:p-14"
+              className="mx-auto max-w-[820px] rounded-md bg-surface p-10 shadow-sm ring-1 ring-border sm:p-14"
               style={{ minHeight: "60vh" }}
             >
               <div className="md-doc" dangerouslySetInnerHTML={{ __html: html }} />

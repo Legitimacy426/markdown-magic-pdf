@@ -100,3 +100,44 @@
   }
   ::selection { background-color: color-mix(in oklab, var(--brand) 30%, transparent); }
 }
+
+/* Dark-mode preview overrides for .md-doc (PDF export uses a detached container, so these only affect the live preview) */
+.dark .md-doc,
+.dark .md-doc h1,
+.dark .md-doc h2,
+.dark .md-doc h3,
+.dark .md-doc h4 {
+  color: var(--color-foreground);
+}
+
+.dark .md-doc a {
+  color: var(--color-brand);
+}
+
+.dark .md-doc blockquote {
+  background: var(--color-muted);
+  border-left-color: var(--color-border);
+  color: var(--color-muted-foreground);
+}
+
+.dark .md-doc code {
+  background: var(--color-muted);
+  color: var(--color-foreground);
+}
+
+.dark .md-doc th {
+  background: var(--color-muted);
+}
+
+.dark .md-doc th,
+.dark .md-doc td {
+  border-color: var(--color-border);
+}
+
+.dark .md-doc hr {
+  border-color: var(--color-border);
+}
+
+.dark .md-doc img {
+  opacity: 0.92;
+}
