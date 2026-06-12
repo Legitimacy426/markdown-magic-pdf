@@ -10,7 +10,12 @@ function getInitialMode(): ThemeMode {
 }
 
 export function useTheme() {
-  const [mode, setMode] = useState<ThemeMode>(getInitialMode);
+  const [mode, setMode] = useState<ThemeMode>("light");
+
+  useEffect(() => {
+    // Synchronize with stored theme or system preference after mounting
+    setMode(getInitialMode());
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
