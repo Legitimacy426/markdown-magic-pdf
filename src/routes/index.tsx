@@ -22,6 +22,7 @@ type PageSize = "a4" | "letter" | "legal";
 type Orientation = "portrait" | "landscape";
 
 function Index() {
+  const { mode, toggle } = useTheme();
   const [markdown, setMarkdown] = useState<string>(SAMPLE_MARKDOWN);
   const [theme, setTheme] = useState<ThemeId>("modern");
   const [pageSize, setPageSize] = useState<PageSize>("a4");
