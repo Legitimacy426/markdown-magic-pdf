@@ -248,7 +248,7 @@ function Index() {
           </div>
           <div className="flex-1 overflow-auto p-4 sm:p-8">
             <div
-              className="mx-auto max-w-[820px] rounded-md bg-white p-10 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_10px_40px_-20px_rgba(0,0,0,0.25)] sm:p-14"
+              className="mx-auto max-w-[820px] rounded-md bg-surface p-10 shadow-sm ring-1 ring-border sm:p-14"
               style={{ minHeight: "60vh" }}
             >
               <div className="md-doc" dangerouslySetInnerHTML={{ __html: html }} />
