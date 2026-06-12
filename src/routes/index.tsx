@@ -62,7 +62,9 @@ function Index() {
     if (exporting) return;
     setExporting(true);
     try {
-      const html2pdf = (await import("html2pdf.js")).default;
+      const html2pdfMod = await import("html2pdf.js");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const html2pdf = html2pdfMod.default as unknown as () => any;
       const container = document.createElement("div");
       container.innerHTML = `<style>${currentTheme.css}</style><div class="md-doc">${html}</div>`;
       const safeName = (filename.trim() || "document").replace(/\.pdf$/i, "");
@@ -74,7 +76,7 @@ function Index() {
           html2canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
           jsPDF: { unit: "mm", format: pageSize, orientation },
           pagebreak: { mode: ["css", "legacy"] },
-        } as Parameters<ReturnType<typeof html2pdf>["set"]>[0] as never)
+        })
         .from(container)
         .save();
     } finally {
