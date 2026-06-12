@@ -122,6 +122,14 @@ function Index() {
               <span className="hidden sm:inline">Upload .md</span>
             </button>
             <button
+              onClick={toggle}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-2 text-sm font-medium transition hover:bg-accent"
+              title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            >
+              {mode === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+              <span className="hidden sm:inline">{mode === "dark" ? "Dark" : "Light"}</span>
+            </button>
+            <button
               onClick={() => void handleExport()}
               disabled={exporting || !markdown.trim()}
               className="inline-flex items-center gap-1.5 rounded-md bg-brand px-3.5 py-2 text-sm font-semibold text-brand-foreground shadow-sm transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
